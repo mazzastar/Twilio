@@ -11,18 +11,31 @@ require 'twilio-ruby'
 #     :from => "+441562612030")   # Replace with your Twilio number
 # puts message.sid
 
+
 class TestTwilio
+
+	ONE_HOUR=3600
+
 	def initialize 
 		account_sid = 'AC6b543fe3489268bcd6a73496cb1a5a9c'
 		auth_token = '45e4638bbf3cb2bd05dc9534920d53bc'
 		@client = Twilio::REST::Client.new account_sid, auth_token
 	end
 
+	def time_arrival
+		time = Time.now+ONE_HOUR
+		time.strftime('%H:%M') 
+	end
+
 	def send_text(info)
 		@client.account.messages.create(
 			:from => "+441562612030",
 			:to => "+447814430586",
-			:body => "Thank you! Your order was placed and will be delivered before"
+			:body => "Thank you! Your order was placed and will be delivered before #{time_arrival}"
 			)
 	end
+
 end
+
+ # puts (TestTwilio.new).time_arrival
+ 
