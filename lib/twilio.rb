@@ -3,7 +3,7 @@ require 'twilio-ruby'
 
 class TwilioMessage
 
-	ONE_HOUR=3600
+	ONE_HOUR=60*60
 	
 	def initialize 
 		account_sid = 'AC2b549023a67d7da4739b29e0ce36b33b'
