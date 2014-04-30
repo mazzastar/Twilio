@@ -11,9 +11,20 @@ describe Takeaway do
 			expect(expected.length).to eq 0
 		end
 
-		it "can output a menu" do
-		  expected = takeaway.menu
-		  expect(expected).to be_true
+		it "should have no initial menu" do
+		  expect(takeaway.menus.length).to eq 0
+		end
+
+		it "should can add a menu to the menus" do
+		  menu_1 = double :menu, name:'Fish', price: 5
+		  takeaway.add_menu("starter", menu_1 )
+		  expect(takeaway.menus.length).to eq 1
+		end
+
+		it "should retrieve a menu" do
+			menu_1 = double :menu, name:'Fish', price: 5
+		  takeaway.add_menu("starter", menu_1 )
+		  expect(takeaway.get_menu("starter")).to eq menu_1
 		end
 
 		it "can add an order" do

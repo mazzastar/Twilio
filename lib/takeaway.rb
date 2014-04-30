@@ -3,12 +3,21 @@ require_relative './order'
 require_relative './order'
 
 class Takeaway
-	MENU = {'Pasta' => 5, 'Pizza' => 6, 'Cheese' =>5, 'Apples' => 3}
-	
+	# MENU = {'Pasta' => 5, 'Pizza' => 6, 'Cheese' =>5, 'Apples' => 3}
+	attr_reader :menus
 	def initialize	
 		@total_number=0
 		@quantities={}
 		@orders=[]
+		@menus={}
+	end
+
+	def add_menu(name, menu)
+		@menus[name]=menu
+	end
+
+	def get_menu(name)
+		@menus[name]
 	end
 
 	def add_order(new_order)
@@ -54,13 +63,13 @@ class Takeaway
 	end
 
 
-	def menu
-		puts "Menu list"
-		puts "*"*20
+	# def menu
+	# 	# puts "Menu list"
+	# 	# puts "*"*20
 
-		MENU.each{|key, value| puts "#{key} - £#{value}"}
-		MENU
-	end
+	# 	# MENU.each{|key, value| puts "#{key} - £#{value}"}
+	# 	# MENU
+	# end
 
 	def orders
 		@orders
