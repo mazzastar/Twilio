@@ -23,18 +23,12 @@ class Menu
 			@items.delete(name)		
 	end	
 
-
-
-
 	def read_menu
 		puts "Menu list"
 		puts "*"*20
 		formatted_menu = []
-		# items.each{|key, value| formatted_menu <<"#{key} - £#{value}"}
 		items.each{|key, value| formatted_menu << value.format}
 		formatted_menu
-
-		# MENU
 	end
 
 

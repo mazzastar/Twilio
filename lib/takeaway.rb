@@ -3,8 +3,9 @@ require_relative './order'
 require_relative './order'
 
 class Takeaway
-	# MENU = {'Pasta' => 5, 'Pizza' => 6, 'Cheese' =>5, 'Apples' => 3}
+	include TwilioMessage
 	attr_reader :menus
+	
 	def initialize	
 		@total_number=0
 		@quantities={}
@@ -52,24 +53,19 @@ class Takeaway
 				add_order(new_order)
 				send_confirmation
 			else
-				puts "Incorrect Quantity"
 				raise "Incorrect Quantity"
 			end			
 	end
 	
 	def send_confirmation
-		twilio = TwilioMessage.new
-		twilio.send_text
+		send_text
 	end
 
-
-	# def menu
-	# 	# puts "Menu list"
-	# 	# puts "*"*20
-
-	# 	# MENU.each{|key, value| puts "#{key} - £#{value}"}
-	# 	# MENU
-	# end
+	def menu
+		puts "Menu list"
+		puts "*"*20 
+		@menus.each{|menu| menu.read_menu}
+	end
 
 	def orders
 		@orders
@@ -98,40 +94,8 @@ class Takeaway
 			end
 			process_order(new_order, expectedTotal)
 		rescue
-		  retry
+			retry
 		end
-	end
-
-	def print_menu    
-	  puts "1. Show Menu"
-	  puts "2. Show Orders"
-	  puts "3. Remove Leading Order"
-	  puts "4. Add Order"
-	  puts "9. Exit"
-	end
-
-	def process(selection)
-	  case selection
-	  when "1"
-	    menu
-	  when "2"
-	    print_orders
-	  when "3"
-	    make_next_order    
-	  when "4"
-	    process_input 
-	  when "9"
-	    exit
-	  else
-	    puts "I don't know what you mean, try again"
-	  end
-	end
-
-	def interactive_menu  
-	  loop do
-	    print_menu        
-	    process(STDIN.gets.chomp)
-	  end
 	end
 
 end

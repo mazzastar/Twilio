@@ -77,10 +77,17 @@ describe Takeaway do
 		  expect(takeaway.correct_order?(new_order, estimated_quantity)).not_to be_true
 		end
 
-		it "should send out a text if the order is correct" do
+		# it "should send out a text if the order is correct" do
+		# 	estimated_quantity = 10
+		# 	new_order.stub(:total_items).and_return(10)
+		# 	expect(takeaway).to receive(:send_confirmation)
+		# 	takeaway.process_order(new_order, estimated_quantity)
+		# end
+
+	it "should send out a text if the order is correct" do
 			estimated_quantity = 10
 			new_order.stub(:total_items).and_return(10)
-			expect(takeaway).to receive(:send_confirmation)
+			expect(takeaway).to receive(:send_text)
 			takeaway.process_order(new_order, estimated_quantity)
 		end
 
