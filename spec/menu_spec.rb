@@ -3,7 +3,7 @@ require "menu"
 describe Menu do
 
 	let(:dish){double :dish, name: 'Fish', price: 4, format: "Fish - £4" }
-	let(:menu){Menu.new}
+	let(:menu){Menu.new("Starter")}
   it "should have no dishes when created" do
     expect(menu.items.length).to eq 0
   end

@@ -1,8 +1,10 @@
 class Menu
 
 	attr_reader :items
+	attr_reader :name
 
-	def initialize
+	def initialize(name)
+		@name = name
 		@items = {}		
 	end
 

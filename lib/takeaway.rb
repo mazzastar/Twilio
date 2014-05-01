@@ -1,6 +1,7 @@
 require_relative './twilio'
 require_relative './order'
-require_relative './order'
+require_relative './menu'
+require_relative './dish'
 
 class Takeaway
 	include TwilioMessage
@@ -13,8 +14,8 @@ class Takeaway
 		@menus={}
 	end
 
-	def add_menu(name, menu)
-		@menus[name]=menu
+	def add_menu(menu)
+		@menus[menu.name]=menu
 	end
 
 	def get_menu(name)
@@ -29,12 +30,12 @@ class Takeaway
 		order = @orders.shift
 	end
 
-	def correct_order?(new_order, estimated_quantity)
-		new_order.total_items == estimated_quantity
+	def correct_order?(new_order)
+		new_order.total_items == new_order.expected_total
 	end
 
-	def process_order(new_order, estimated_quantity)
-			if correct_order?(new_order, estimated_quantity)
+	def process_order(new_order)	
+			if correct_order?(new_order)	
 				add_order(new_order)
 				send_confirmation
 			else
@@ -46,24 +47,17 @@ class Takeaway
 		send_text
 	end
 
-	# def full_menu
-	# 	# puts "Menu list"
-	# 	# puts "*"*20 
-	# 	@menus.each{|menu| menu.read_menu}
-	# end
-
-	def process_input
+	def get_order
 		begin
-			expectedTotal, itemString = splitTotal(inputItems)
+			itemList = inputItems
+			expectedTotal, itemString = splitTotal(itemList)
 			new_order = Order.new(expectedTotal)
 
 			splitItems(itemString).each do |string|
 				item_key, quantity = string.split(',')
 				new_order.add_item(item_key,quantity.to_i)
 			end
-			process_order(new_order, expectedTotal)
-		rescue
-			retry
+			process_order(new_order)
 		end
 	end
 

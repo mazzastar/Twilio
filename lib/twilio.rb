@@ -4,9 +4,8 @@ require 'twilio-ruby'
 module TwilioMessage
 
 	ONE_HOUR=60*60
-	account_sid = 'AC2b549023a67d7da4739b29e0ce36b33b'
-	auth_token = 'c923af6f6f8d722c440049adeb6f90ac'
-	@client = Twilio::REST::Client.new account_sid, auth_token
+	ACCOUNT_SID = 'AC2b549023a67d7da4739b29e0ce36b33b'
+	AUTH_TOKEN = 'c923af6f6f8d722c440049adeb6f90ac'
 
 	def time_arrival
 		time = Time.now+ONE_HOUR
@@ -14,6 +13,7 @@ module TwilioMessage
 	end	
 
 	def send_text
+		@client = Twilio::REST::Client.new ACCOUNT_SID, AUTH_TOKEN
 		puts "send out text"
 		@client.account.messages.create(
 			:from => "+441242305349",

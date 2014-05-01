@@ -2,11 +2,15 @@ require "takeaway"
 
 describe Takeaway do 
 	let(:takeaway) {Takeaway.new}
-	let(:new_order) {double :new_order}
+	let(:new_order) {double :new_order, total_items: 10, expected_total: 10}
+	let(:bad_order) {double :new_order, total_items: 10, expected_total: 20}
 	let(:second_order) {double :second_order}
 	let(:twilio){ double :twilio}
 	let(:menu_1){double :menu, name:"starter"}
+	let(:estimated_quantity1){10}
+	let(:estimated_quantity2){15}
 	
+
 	context "intialised takeaway" do
 		it "should have no orders after creation " do
 		  expected = takeaway.orders
@@ -18,12 +22,26 @@ describe Takeaway do
 		end
 
 		it "should can add a menu to the menus" do
-		  takeaway.add_menu("starter", menu_1 )
+		  takeaway.add_menu(menu_1)
 		  expect(takeaway.menus.length).to eq 1
 		end
 
+		it "should contain uniquely named menus" do
+			menu_2 = double :menu, name: "starter"
+		  takeaway.add_menu(menu_1)
+		  takeaway.add_menu(menu_2)
+		  expect(takeaway.menus.length).to eq 1
+		end
+
+		it "should overwrite existing menus" do
+			menu_2 = double :menu, name: "starter"
+		  takeaway.add_menu(menu_1)
+		  takeaway.add_menu(menu_2)
+		  expect(takeaway.get_menu("starter")).to eq menu_2
+		end
+
 		it "should retrieve a menu" do
-		  takeaway.add_menu("starter", menu_1 )
+		  takeaway.add_menu(menu_1)
 		  expect(takeaway.get_menu("starter")).to eq menu_1
 		end
 
@@ -52,13 +70,12 @@ describe Takeaway do
 		   expect(item_array).to eq ["Pasta,2", "Cheese,5"]
 		end
 
-
 		it "can process an order" do
 			takeaway.add_order(new_order)
 			expect(takeaway.make_next_order).to eq new_order
 		end
 
-		it "should expect orders left" do
+		it "should remove orders in a FIFO queue" do
 		  takeaway.add_order(new_order)
 		  takeaway.add_order(second_order)
 		  takeaway.make_next_order
@@ -66,42 +83,28 @@ describe Takeaway do
 		end
 
 		it "can compare confirm correct orders" do
-			estimated_quantity = 10
-			new_order.stub(:total_items).and_return(10)
-		  expect(takeaway.correct_order?(new_order, estimated_quantity)).to be_true
+			new_order.stub(:total_items).and_return(estimated_quantity1)
+		  expect(takeaway.correct_order?(new_order)).to be_true
 		end
 
 		it "can confirm incorrect order totals" do
-			estimated_quantity = 15
-			new_order.stub(:total_items).and_return(10)
-		  expect(takeaway.correct_order?(new_order, estimated_quantity)).not_to be_true
+		  expect(takeaway.correct_order?(bad_order)).not_to be_true
 		end
 
 		it "should send out a text if the order is correct" do
-			estimated_quantity = 10
-			new_order.stub(:total_items).and_return(10)
-			expect(takeaway).to receive(:send_confirmation)
-			takeaway.process_order(new_order, estimated_quantity)
-		end
-
-	it "should send out a text if the order is correct" do
-			estimated_quantity = 10
-			new_order.stub(:total_items).and_return(10)
 			expect(takeaway).to receive(:send_text)
-			takeaway.process_order(new_order, estimated_quantity)
+			takeaway.process_order(new_order)
 		end
 
 		it "should raise an error when incorrect totals are given" do
-			estimated_quantity = 15
-			new_order.stub(:total_items).and_return(10)
-			expect{takeaway.process_order(new_order, estimated_quantity)}.to raise_error "Incorrect Quantity"
+			expect{takeaway.process_order(bad_order)}.to raise_error "Incorrect Quantity"
 		end
 
 		it "can take multiple orders" do
 			takeaway.stub(:gets).and_return("7: Pasta, 2; Cheese, 5")
 			takeaway.stub(:send_confirmation).and_return (true)
-			takeaway.process_input
-			takeaway.process_input
+			takeaway.get_order
+			takeaway.get_order
 			expect(takeaway.orders.count).to eq 2
 		end
 
