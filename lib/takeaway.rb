@@ -5,10 +5,10 @@ require_relative './order'
 class Takeaway
 	include TwilioMessage
 	attr_reader :menus
-	
+	attr_reader :orders
+
 	def initialize	
 		@total_number=0
-		@quantities={}
 		@orders=[]
 		@menus={}
 	end
@@ -25,23 +25,8 @@ class Takeaway
 		@orders << new_order
 	end
 
-	def inputItems
-		puts "Place order in format: <total expected>: <item1>, <quantity2>;<item2>, <quantity2>;... "
-		orderString = gets.chomp
-	end
-
-	def splitItems(itemString)
-		items = itemString.split(';')
-	end
-
-	def splitTotal(string)
-		total, itemsString = string.split(':')
-		[total.to_i, itemsString.gsub(" ",'')]
-	end
-
 	def make_next_order
 		order = @orders.shift
-		order
 	end
 
 	def correct_order?(new_order, estimated_quantity)
@@ -61,27 +46,11 @@ class Takeaway
 		send_text
 	end
 
-	def menu
-		puts "Menu list"
-		puts "*"*20 
-		@menus.each{|menu| menu.read_menu}
-	end
-
-	def orders
-		@orders
-	end
-
-	def print_orders
-		puts "Orders"
-		puts "*"*20
-		@orders.each_with_index{|order, index| print_order(order, index)}
-	end
-
-	def print_order(order, index)
-		puts "Order - #{index+1}"
-		order.your_order
-		puts "*"*20
-	end
+	# def full_menu
+	# 	# puts "Menu list"
+	# 	# puts "*"*20 
+	# 	@menus.each{|menu| menu.read_menu}
+	# end
 
 	def process_input
 		begin
@@ -96,6 +65,32 @@ class Takeaway
 		rescue
 			retry
 		end
+	end
+
+	def print_orders
+		puts "Orders"
+		puts "*"*20
+		@orders.each_with_index{|order, index| print_order(order, index)}
+	end
+
+	def print_order(order, index)
+		puts "Order - #{index+1}"
+		order.your_order
+		puts "*"*20
+	end
+
+	def splitItems(itemString)
+		items = itemString.split(';')
+	end
+
+	def splitTotal(string)
+		total, itemsString = string.split(':')
+		[total.to_i, itemsString.gsub(" ",'')]
+	end
+
+	def inputItems
+		puts "Place order in format: <total expected>: <item1>, <quantity2>;<item2>, <quantity2>;... "
+		orderString = gets.chomp
 	end
 
 end

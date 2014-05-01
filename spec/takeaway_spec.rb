@@ -5,6 +5,8 @@ describe Takeaway do
 	let(:new_order) {double :new_order}
 	let(:second_order) {double :second_order}
 	let(:twilio){ double :twilio}
+	let(:menu_1){double :menu, name:"starter"}
+	
 	context "intialised takeaway" do
 		it "should have no orders after creation " do
 		  expected = takeaway.orders
@@ -16,13 +18,11 @@ describe Takeaway do
 		end
 
 		it "should can add a menu to the menus" do
-		  menu_1 = double :menu, name:'Fish', price: 5
 		  takeaway.add_menu("starter", menu_1 )
 		  expect(takeaway.menus.length).to eq 1
 		end
 
 		it "should retrieve a menu" do
-			menu_1 = double :menu, name:'Fish', price: 5
 		  takeaway.add_menu("starter", menu_1 )
 		  expect(takeaway.get_menu("starter")).to eq menu_1
 		end
@@ -77,12 +77,12 @@ describe Takeaway do
 		  expect(takeaway.correct_order?(new_order, estimated_quantity)).not_to be_true
 		end
 
-		# it "should send out a text if the order is correct" do
-		# 	estimated_quantity = 10
-		# 	new_order.stub(:total_items).and_return(10)
-		# 	expect(takeaway).to receive(:send_confirmation)
-		# 	takeaway.process_order(new_order, estimated_quantity)
-		# end
+		it "should send out a text if the order is correct" do
+			estimated_quantity = 10
+			new_order.stub(:total_items).and_return(10)
+			expect(takeaway).to receive(:send_confirmation)
+			takeaway.process_order(new_order, estimated_quantity)
+		end
 
 	it "should send out a text if the order is correct" do
 			estimated_quantity = 10
@@ -98,7 +98,6 @@ describe Takeaway do
 		end
 
 		it "can take multiple orders" do
-
 			takeaway.stub(:gets).and_return("7: Pasta, 2; Cheese, 5")
 			takeaway.stub(:send_confirmation).and_return (true)
 			takeaway.process_input
