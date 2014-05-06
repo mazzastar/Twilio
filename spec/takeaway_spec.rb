@@ -78,8 +78,8 @@ describe Takeaway do
 		it "should remove orders in a FIFO queue" do
 		  takeaway.add_order(new_order)
 		  takeaway.add_order(second_order)
-		  takeaway.make_next_order
-		  expect(takeaway.make_next_order).to eq second_order
+		  expect(takeaway.make_next_order).to eq new_order
+		  # expect(takeaway.make_next_order).to eq second_order
 		end
 
 		it "can compare confirm correct orders" do
